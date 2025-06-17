@@ -1,18 +1,21 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import * as workOrdersService from '../services/workOrdersService';
+import { workOrdersParamSchema } from '../validators/inspectionValidator';
 
-export async function getWorkOrders(req: Request, res: Response): Promise<void> {
-  const mechanicId = parseInt(req.params.mechanicId || '', 10);
-  if (!mechanicId) {
-    res.status(400).json({ message: 'mechanicId required' });
-    return;
-  }
-
+export async function getWorkOrders(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
+    const { mechanicId } = workOrdersParamSchema.parse(req.params);
     const orders = await workOrdersService.findByMechanicId(mechanicId);
     res.json(orders);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+  } catch (error: any) {
+    if (error?.issues) {
+      res.status(400).json({ error: error.issues[0].message, status: 400 });
+      return;
+    }
+    next(error);
   }
 }
