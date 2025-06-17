@@ -5,7 +5,7 @@
     "jsx": "react",
     "allowJs": true,
     "strict": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "noEmit": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true
