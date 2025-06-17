@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider, AuthContext, ThemeProvider, SyncProvider } from './contexts';
-import { LoginScreen, WorkOrdersScreen, InspectionScreen } from './screens';
+import { MechanicSelectScreen, WorkOrdersScreen, InspectionScreen } from './screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,7 +18,10 @@ function RootNavigator() {
             <Stack.Screen name="Inspection" component={InspectionScreen} />
           </>
         ) : (
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen
+            name="SelectMechanic"
+            component={MechanicSelectScreen}
+          />
         )}
       </Stack.Navigator>
     </NavigationContainer>

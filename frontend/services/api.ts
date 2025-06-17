@@ -9,6 +9,20 @@ export async function getWorkOrders(mechanicId: string) {
   return response.data;
 }
 
+export async function getMechanics(companyId: number) {
+  const res = await api.get(`/mechanics/${companyId}`);
+  return res.data;
+}
+
+export async function verifyMechanicLogin(data: {
+  companyId: number;
+  mechanicNumber: number;
+  pin: string;
+}) {
+  const res = await api.post('/mechanics/login', data);
+  return res.data;
+}
+
 export async function getLineItems(orderId: number) {
   const response = await api.get(`/line-items/${orderId}`);
   return response.data;

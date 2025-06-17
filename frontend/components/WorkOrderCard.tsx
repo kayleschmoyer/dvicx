@@ -53,13 +53,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '700',
+    fontFamily: 'Inter',
     marginBottom: 4,
   },
   text: {
     fontSize: 14,
+    fontFamily: 'Inter',
   },
   sub: {
     marginTop: 6,
     fontSize: 12,
+    fontFamily: 'Inter',
   },
 });

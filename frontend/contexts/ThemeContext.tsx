@@ -9,16 +9,23 @@ export interface Theme {
   accent: string;
 }
 
+const COLORS = {
+  magenta: '#ED017F',
+  charcoal: '#333333',
+  white: '#FFFFFF',
+  biscuit: '#F2F3EF',
+};
+
 const lightTheme: Theme = {
-  background: '#ffffff',
-  text: '#2b2b2b',
-  accent: '#ff00ff',
+  background: COLORS.white,
+  text: COLORS.charcoal,
+  accent: COLORS.magenta,
 };
 
 const darkTheme: Theme = {
-  background: '#2b2b2b',
-  text: '#ffffff',
-  accent: '#ff00ff',
+  background: COLORS.charcoal,
+  text: COLORS.white,
+  accent: COLORS.magenta,
 };
 
 interface ThemeContextProps {

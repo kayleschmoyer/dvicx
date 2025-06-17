@@ -1,5 +1,5 @@
 export interface Mechanic {
-  mechanicId: number;
+  mechanicNumber: number;
   name: string;
   role: string;
   pin?: string;
