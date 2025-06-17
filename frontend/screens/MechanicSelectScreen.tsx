@@ -12,24 +12,26 @@ import { getMechanics, verifyMechanicLogin } from '../services/api';
 import MechanicCard from '../components/MechanicCard';
 import PinModal from '../components/PinModal';
 
-const COMPANY_ID = 1;
+const COMPANY_ID = 7638;
 
 export default function MechanicSelectScreen() {
   const { login } = useContext(AuthContext);
   const { theme } = useTheme();
   const [mechanics, setMechanics] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
       try {
+        console.log('📡 Fetching mechanics for company ID:', COMPANY_ID);
         const list = await getMechanics(COMPANY_ID);
+        console.log('✅ Mechanics loaded:', list);
         setMechanics(list);
       } catch (e) {
-        console.error(e);
+        console.error('❌ Failed to load mechanics:', e);
         setError('Failed to load mechanics');
       } finally {
         setLoading(false);
@@ -38,7 +40,7 @@ export default function MechanicSelectScreen() {
     load();
   }, []);
 
-  const handleSelect = (id: number) => {
+  const handleSelect = (id: string) => {
     setSelected(id);
     setModal(true);
   };
@@ -46,14 +48,23 @@ export default function MechanicSelectScreen() {
   const handleLogin = async (pin: string) => {
     if (!selected) return;
     try {
-      const res = await verifyMechanicLogin({
+      console.log('🔐 Attempting login with', {
         companyId: COMPANY_ID,
-        mechanicNumber: selected,
+        mechanicId: selected,
         pin,
       });
-      login(String(res.mechanicNumber), res.token);
+
+      const res = await verifyMechanicLogin({
+        companyId: COMPANY_ID,
+        mechanicId: selected, // preserve leading 0s
+        pin,
+      });
+
+      console.log('✅ Login success:', res);
+      login(res.mechanicId, res.token);
     } catch (e) {
-      console.error(e);
+      console.error('❌ Login failed:', e);
+      setError('Incorrect PIN or login failed.');
     } finally {
       setModal(false);
     }
@@ -72,17 +83,25 @@ export default function MechanicSelectScreen() {
       {error && (
         <Text style={[styles.error, { color: theme.accent }]}>{error}</Text>
       )}
-      <FlatList
-        data={mechanics}
-        keyExtractor={(m) => m.mechanicNumber.toString()}
-        renderItem={({ item }) => (
-          <MechanicCard
-            mechanic={item}
-            onPress={() => handleSelect(item.mechanicNumber)}
-          />
-        )}
-        contentContainerStyle={{ padding: 16 }}
-      />
+
+      {mechanics.length === 0 ? (
+        <Text style={[styles.error, { color: theme.text, textAlign: 'center', marginTop: 40 }]}>
+          No mechanics available. Please verify MobileEnabled is 1 and HOME_SHOP is {COMPANY_ID}.
+        </Text>
+      ) : (
+        <FlatList
+          data={mechanics}
+          keyExtractor={(m) => m.mechanicId}
+          renderItem={({ item }) => (
+            <MechanicCard
+              mechanic={item}
+              onPress={() => handleSelect(item.mechanicId)}
+            />
+          )}
+          contentContainerStyle={{ padding: 16 }}
+        />
+      )}
+
       <PinModal
         visible={modal}
         onClose={() => setModal(false)}
