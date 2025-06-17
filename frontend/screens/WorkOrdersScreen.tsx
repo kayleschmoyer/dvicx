@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { AuthContext } from '../contexts';
+import { AuthContext, ThemeContext } from '../contexts';
 import { getWorkOrders } from '../services/api';
 import WorkOrderCard from '../components/WorkOrderCard';
+import { ThemeToggle } from '../components';
 import { useNavigation } from '@react-navigation/native';
 
 interface WorkOrder {
@@ -17,6 +18,7 @@ interface WorkOrder {
 
 export default function WorkOrdersScreen() {
   const { mechanicId } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
   const [orders, setOrders] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation<any>();
@@ -38,14 +40,15 @@ export default function WorkOrdersScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}> 
+      <View style={[styles.center, { backgroundColor: theme.background }]}>
         <ActivityIndicator size="large" color="#ff00ff" />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <ThemeToggle />
       <FlatList
         data={orders}
         keyExtractor={(item) => item.estimateNo.toString()}
@@ -64,12 +67,10 @@ export default function WorkOrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1c1c1c',
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1c1c1c',
   },
 });
