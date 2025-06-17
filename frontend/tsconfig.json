@@ -6,7 +6,9 @@
     "allowJs": true,
     "strict": true,
     "moduleResolution": "node",
-    "noEmit": true
+    "noEmit": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
