@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, FlatList, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { getLineItems } from '../services/api';
 import { InspectionItemCard, Button, SyncStatusBadge } from '../components';
@@ -18,6 +18,7 @@ export default function InspectionScreen() {
   const order = (route.params as RouteParams).order;
   const [items, setItems] = useState<InspectionItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const { theme } = useTheme();
   const { enqueue } = useContext(SyncContext);
@@ -34,6 +35,7 @@ export default function InspectionScreen() {
         })));
       } catch (e) {
         console.error(e);
+        setError('Failed to load inspection items');
       } finally {
         setLoading(false);
       }
@@ -55,6 +57,14 @@ export default function InspectionScreen() {
     return (
       <View style={[styles.center, { backgroundColor: theme.background }]}>
         <ActivityIndicator size="large" color="#ff00ff" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.center, { backgroundColor: theme.background }]}>
+        <Text style={{ color: theme.text }}>{error}</Text>
       </View>
     );
   }
