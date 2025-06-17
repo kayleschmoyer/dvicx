@@ -9,4 +9,14 @@ export async function getWorkOrders(mechanicId: string) {
   return response.data;
 }
 
+export async function getLineItems(orderId: number) {
+  const response = await api.get(`/line-items/${orderId}`);
+  return response.data;
+}
+
+export async function submitInspection(data: any) {
+  const response = await api.post('/inspections', data);
+  return response.data;
+}
+
 export default api;
