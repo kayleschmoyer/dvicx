@@ -39,12 +39,12 @@ interface EnhancedMechanicCardProps {
   index: number;
 }
 
-const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({ 
-  mechanic, 
-  onPress, 
-  index 
+const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({
+  mechanic,
+  onPress,
+  index,
 }) => {
-  const animatedValue = new Animated.Value(0);
+  const animatedValue = React.useRef(new Animated.Value(0)).current;
   
   React.useEffect(() => {
     Animated.timing(animatedValue, {
@@ -578,6 +578,8 @@ const styles = StyleSheet.create({
   mechanicCard: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: COLORS.lightGray,
     padding: 20,
     flexDirection: 'row',
     alignItems: 'center',

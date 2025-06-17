@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator, Text } from 'react-native';
+import axios from 'axios';
 import { AuthContext } from '../contexts';
 import { useTheme } from '../hooks';
 import { getWorkOrders } from '../services/api';
@@ -34,9 +35,16 @@ export default function WorkOrdersScreen() {
       try {
         const data = await getWorkOrders(mechanicId);
         setOrders(data);
-      } catch (e) {
-        console.error(e);
-        setError('Failed to load work orders');
+        if (Array.isArray(data) && data.length === 0) {
+          setError('No work orders assigned to this mechanic');
+        }
+      } catch (err) {
+        console.error(err);
+        if (axios.isAxiosError(err) && err.response?.status === 404) {
+          setError('No work orders assigned to this mechanic');
+        } else {
+          setError('Failed to load work orders');
+        }
       } finally {
         setLoading(false);
       }
