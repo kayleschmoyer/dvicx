@@ -3,7 +3,7 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../hooks';
 
 interface Props {
-  mechanic: { mechanicNumber: number; name: string; role: string };
+  mechanic: { mechanicId: number; name: string; role: string };
   onPress: () => void;
 }
 
