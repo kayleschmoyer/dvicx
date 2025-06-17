@@ -7,12 +7,14 @@ export async function list(companyId: number): Promise<Mechanic[]> {
     .request()
     .input('companyId', sql.Int, companyId)
     .query(
-      'SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE FROM MECHANIC WHERE COMPANY_NUMBER = @companyId AND MobileEnabled = 1'
+      'SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD FROM MECHANIC WHERE COMPANY_NUMBER = @companyId AND MobileEnabled = 1'
     );
+
   return result.recordset.map((r: any) => ({
-    mechanicNumber: r.MECHANIC_NUMBER,
+    mechanicId: r.MECHANIC_NUMBER,
     name: r.MECHANIC_NAME,
     role: r.POPUP_TYPE,
+    pin: r.TIME_CLOCK_PASSWORD,
   }));
 }
 
@@ -28,13 +30,16 @@ export async function verifyLogin(
     .input('mechanicNumber', sql.Int, mechanicNumber)
     .input('pin', sql.VarChar, pin)
     .query(
-      'SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE FROM MECHANIC WHERE MECHANIC_NUMBER = @mechanicNumber AND TIME_CLOCK_PASSWORD = @pin AND COMPANY_NUMBER = @companyId AND MobileEnabled = 1'
+      'SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD FROM MECHANIC WHERE MECHANIC_NUMBER = @mechanicNumber AND TIME_CLOCK_PASSWORD = @pin AND COMPANY_NUMBER = @companyId AND MobileEnabled = 1'
     );
+
   const row = result.recordset[0];
   if (!row) return null;
+
   return {
-    mechanicNumber: row.MECHANIC_NUMBER,
+    mechanicId: row.MECHANIC_NUMBER,
     name: row.MECHANIC_NAME,
     role: row.POPUP_TYPE,
+    pin: row.TIME_CLOCK_PASSWORD,
   };
 }

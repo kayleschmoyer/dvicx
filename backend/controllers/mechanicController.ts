@@ -39,12 +39,12 @@ export async function verifyLogin(
       return;
     }
     const token = jwt.sign(
-      { mechanicNumber: mech.mechanicNumber, role: mech.role },
+      { mechanicId: mech.mechanicId, role: mech.role },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
     res.json({
-      mechanicNumber: mech.mechanicNumber,
+      mechanicId: mech.mechanicId,
       name: mech.name,
       role: mech.role,
       token,

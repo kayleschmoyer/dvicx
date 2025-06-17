@@ -6,15 +6,20 @@ export async function findById(mechanicId: number): Promise<Mechanic | null> {
   const result = await pool
     .request()
     .input('MechanicID', sql.Int, mechanicId)
-    .query('SELECT MechanicID, Name, Role, Pin FROM MECHANIC WHERE MechanicID = @MechanicID');
+    .query(`
+      SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD
+      FROM MECHANIC
+      WHERE MECHANIC_NUMBER = @MechanicID AND MobileEnabled = 1
+    `);
 
   const row = result.recordset[0];
   if (!row) return null;
+
   return {
-    mechanicId: row.MechanicID,
-    name: row.Name,
-    role: row.Role,
-    pin: row.Pin,
+    mechanicId: row.MECHANIC_NUMBER,
+    name: row.MECHANIC_NAME,
+    role: row.POPUP_TYPE,
+    pin: row.TIME_CLOCK_PASSWORD,
   };
 }
 
@@ -23,15 +28,20 @@ export async function findByPin(pin: string): Promise<Mechanic | null> {
   const result = await pool
     .request()
     .input('Pin', sql.VarChar, pin)
-    .query('SELECT MechanicID, Name, Role, Pin FROM MECHANIC WHERE Pin = @Pin');
+    .query(`
+      SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD
+      FROM MECHANIC
+      WHERE TIME_CLOCK_PASSWORD = @Pin AND MobileEnabled = 1
+    `);
 
   const row = result.recordset[0];
   if (!row) return null;
+
   return {
-    mechanicId: row.MechanicID,
-    name: row.Name,
-    role: row.Role,
-    pin: row.Pin,
+    mechanicId: row.MECHANIC_NUMBER,
+    name: row.MECHANIC_NAME,
+    role: row.POPUP_TYPE,
+    pin: row.TIME_CLOCK_PASSWORD,
   };
 }
 
@@ -44,4 +54,3 @@ export async function login(mechanicId?: number, pin?: string): Promise<Mechanic
   }
   return null;
 }
-
