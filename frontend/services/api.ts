@@ -5,7 +5,7 @@ const api = axios.create({
 });
 
 export async function getWorkOrders(mechanicId: string) {
-  const response = await api.get(`/workorders/${mechanicId}`);
+  const response = await api.get(`/work-orders/${mechanicId}`);
   return response.data;
 }
 
