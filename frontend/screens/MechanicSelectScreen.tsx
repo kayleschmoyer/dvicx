@@ -56,7 +56,7 @@ export default function MechanicSelectScreen() {
 
       const res = await verifyMechanicLogin({
         companyId: COMPANY_ID,
-        mechanicId: selected, // preserve leading 0s
+        mechanicNumber: parseInt(selected, 10),
         pin,
       });
 
