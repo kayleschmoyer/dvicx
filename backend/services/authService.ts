@@ -9,7 +9,10 @@ export async function findById(mechanicId: number): Promise<Mechanic | null> {
     .query(`
       SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD
       FROM MECHANIC
-      WHERE MECHANIC_NUMBER = @MechanicID AND MobileEnabled = 1
+      WHERE MECHANIC_NUMBER = @MechanicID
+        AND MobileEnabled = 1
+        AND ISNULL(POPUP_TYPE, '') <> ''
+        AND UPPER(CERTIFICATE_NUMBER) <> 'EXPIRED'
     `);
 
   const row = result.recordset[0];
@@ -31,7 +34,10 @@ export async function findByPin(pin: string): Promise<Mechanic | null> {
     .query(`
       SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD
       FROM MECHANIC
-      WHERE TIME_CLOCK_PASSWORD = @Pin AND MobileEnabled = 1
+      WHERE TIME_CLOCK_PASSWORD = @Pin
+        AND MobileEnabled = 1
+        AND ISNULL(POPUP_TYPE, '') <> ''
+        AND UPPER(CERTIFICATE_NUMBER) <> 'EXPIRED'
     `);
 
   const row = result.recordset[0];
