@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle } from 'react-native';
+import { ThemeContext } from '../contexts';
 
 interface Props {
   title: string;
@@ -9,9 +10,18 @@ interface Props {
 }
 
 export default function Button({ title, onPress, loading, style }: Props) {
+  const { theme } = useContext(ThemeContext);
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress} disabled={loading}>
-      {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.text}>{title}</Text>}
+    <TouchableOpacity
+      style={[styles.button, { backgroundColor: theme.accent }, style]}
+      onPress={onPress}
+      disabled={loading}
+    >
+      {loading ? (
+        <ActivityIndicator color="#fff" />
+      ) : (
+        <Text style={[styles.text, { color: theme.text }]}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 }

@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { getLineItems, submitInspection } from '../services/api';
+import { getLineItems } from '../services/api';
 import { InspectionItemCard, Button } from '../components';
+import { ThemeContext } from '../contexts';
+import { useOffline } from '../hooks';
 import type { InspectionItem } from '../components/InspectionItemCard';
 
 interface RouteParams {
@@ -17,6 +19,8 @@ export default function InspectionScreen() {
   const [items, setItems] = useState<InspectionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const { theme } = useContext(ThemeContext);
+  const { submitInspection } = useOffline();
 
   useEffect(() => {
     const load = async () => {
@@ -43,25 +47,20 @@ export default function InspectionScreen() {
 
   const handleSubmit = async () => {
     setSubmitting(true);
-    try {
-      await submitInspection({ orderId: order.estimateNo, items });
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setSubmitting(false);
-    }
+    await submitInspection({ orderId: order.estimateNo, items });
+    setSubmitting(false);
   };
 
   if (loading) {
     return (
-      <View style={styles.center}>
+      <View style={[styles.center, { backgroundColor: theme.background }]}>
         <ActivityIndicator size="large" color="#ff00ff" />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <FlatList
         data={items}
         keyExtractor={(item) => item.id.toString()}
@@ -80,13 +79,11 @@ export default function InspectionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1c1c1c',
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1c1c1c',
   },
   submit: {
     paddingHorizontal: 16,

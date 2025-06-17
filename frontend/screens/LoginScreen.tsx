@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { TextInput, Button } from '../components';
+import { TextInput, Button, ThemeToggle } from '../components';
 import api from '../services/api';
-import { AuthContext } from '../contexts';
+import { AuthContext, ThemeContext } from '../contexts';
 
 export default function LoginScreen() {
   const { login } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
   const [mechanicId, setMechanicId] = useState('');
   const [pin, setPin] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,8 +31,9 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mechanic Login</Text>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <ThemeToggle />
+      <Text style={[styles.title, { color: theme.text }]}>Mechanic Login</Text>
       <TextInput
         placeholder="Mechanic ID"
         value={mechanicId}
@@ -53,12 +55,10 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2b2b2b',
     justifyContent: 'center',
     padding: 20,
   },
   title: {
-    color: '#fff',
     fontSize: 24,
     fontWeight: '600',
     textAlign: 'center',

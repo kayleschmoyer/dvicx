@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthProvider, AuthContext } from './contexts';
+import { AuthProvider, AuthContext, ThemeProvider } from './contexts';
 import { LoginScreen, WorkOrdersScreen, InspectionScreen } from './screens';
 
 const Stack = createNativeStackNavigator();
@@ -27,8 +27,10 @@ function RootNavigator() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <RootNavigator />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
