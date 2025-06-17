@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TextInput, Button, ThemeToggle, SyncStatusBadge } from '../components';
-import api from '../services/api';
+import { loginMechanic } from '../services/api';
 import { AuthContext } from '../contexts';
 import { useTheme } from '../hooks';
 
@@ -21,9 +21,9 @@ export default function LoginScreen() {
     setError(null);
     setLoading(true);
     try {
-      const response = await api.post('/mechanic/login', { mechanicId, pin });
+      const response = await loginMechanic({ mechanicId: Number(mechanicId) || undefined, pin });
       const { token, mechanicId: id } = response.data;
-      login(id, token);
+      login(String(id), token);
     } catch (err: any) {
       setError('Invalid credentials');
     } finally {
