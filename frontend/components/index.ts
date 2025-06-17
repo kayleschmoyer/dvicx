@@ -5,3 +5,4 @@ export { default as StatusSelector } from './StatusSelector';
 export { default as PhotoUploader } from './PhotoUploader';
 export { default as InspectionItemCard } from './InspectionItemCard';
 export { default as ThemeToggle } from './ThemeToggle';
+export { default as SyncStatusBadge } from './SyncStatusBadge';

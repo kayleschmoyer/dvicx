@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Switch, StyleSheet } from 'react-native';
-import { ThemeContext } from '../contexts';
+import { useTheme } from '../hooks';
 
 export default function ThemeToggle() {
-  const { mode, toggleTheme, theme } = useContext(ThemeContext);
+  const { mode, toggleTheme, theme } = useTheme();
   return (
     <View style={styles.container}>
       <Switch

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../hooks';
 import StatusSelector, { Status } from './StatusSelector';
 import TextInput from './TextInput';
 import PhotoUploader from './PhotoUploader';
@@ -20,6 +21,7 @@ interface Props {
 
 export default function InspectionItemCard({ item, onChange }: Props) {
   const slideAnim = useRef(new Animated.Value(50)).current;
+  const { theme } = useTheme();
 
   useEffect(() => {
     Animated.timing(slideAnim, {
@@ -34,9 +36,9 @@ export default function InspectionItemCard({ item, onChange }: Props) {
   };
 
   return (
-    <Animated.View style={[styles.card, { transform: [{ translateX: slideAnim }] }]}>
-      <Text style={styles.title}>{item.partNumber}</Text>
-      <Text style={styles.desc}>{item.description}</Text>
+    <Animated.View style={[styles.card, { transform: [{ translateX: slideAnim }], backgroundColor: theme.background }]}>
+      <Text style={[styles.title, { color: theme.text }]}>{item.partNumber}</Text>
+      <Text style={[styles.desc, { color: theme.text }]}>{item.description}</Text>
       <StatusSelector value={item.status || null} onChange={(s) => update({ status: s })} />
       <TextInput
         placeholder="Reason (optional)"
@@ -56,12 +58,10 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   title: {
-    color: '#fff',
     fontWeight: '700',
     marginBottom: 4,
   },
   desc: {
-    color: '#eaeaea',
     marginBottom: 8,
   },
 });

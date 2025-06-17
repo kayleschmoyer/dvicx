@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle } from 'react-native';
-import { ThemeContext } from '../contexts';
+import { useTheme } from '../hooks';
 
 interface Props {
   title: string;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function Button({ title, onPress, loading, style }: Props) {
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useTheme();
   return (
     <TouchableOpacity
       style={[styles.button, { backgroundColor: theme.accent }, style]}
@@ -28,13 +28,11 @@ export default function Button({ title, onPress, loading, style }: Props) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#ff00ff',
     paddingVertical: 12,
     alignItems: 'center',
     borderRadius: 4,
   },
   text: {
-    color: '#fff',
     fontWeight: '600',
   },
 });

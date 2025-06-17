@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { AuthContext, ThemeContext } from '../contexts';
+import { AuthContext } from '../contexts';
+import { useTheme } from '../hooks';
 import { getWorkOrders } from '../services/api';
 import WorkOrderCard from '../components/WorkOrderCard';
-import { ThemeToggle } from '../components';
+import { ThemeToggle, SyncStatusBadge } from '../components';
 import { useNavigation } from '@react-navigation/native';
 
 interface WorkOrder {
@@ -18,7 +19,7 @@ interface WorkOrder {
 
 export default function WorkOrdersScreen() {
   const { mechanicId } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const [orders, setOrders] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation<any>();
@@ -48,6 +49,7 @@ export default function WorkOrdersScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <SyncStatusBadge />
       <ThemeToggle />
       <FlatList
         data={orders}
