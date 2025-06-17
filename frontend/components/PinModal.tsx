@@ -28,6 +28,7 @@ export default function PinModal({ visible, onSubmit, onClose }: Props) {
             value={pin}
             onChangeText={setPin}
             secureTextEntry
+            keyboardType="number-pad"
           />
           <Button title="Submit" onPress={handle} style={styles.button} />
           <Button title="Cancel" onPress={onClose} style={styles.button} />

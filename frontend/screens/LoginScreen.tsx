@@ -47,6 +47,7 @@ export default function LoginScreen() {
         value={pin}
         onChangeText={setPin}
         secureTextEntry
+        keyboardType="number-pad"
       />
       {error && <Text style={styles.error}>{error}</Text>}
       <Button title="Login" onPress={handleSubmit} loading={loading} style={styles.button} />
