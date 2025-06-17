@@ -5,7 +5,7 @@ import workOrderRoutes from './workOrders';
 const router = Router();
 
 router.use('/auth', authRoutes);
-router.use('/workorders', workOrderRoutes);
+router.use('/work-orders', workOrderRoutes);
 
 export default router;
 
