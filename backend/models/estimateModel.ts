@@ -1,8 +1,11 @@
 export interface Estimate {
-  workOrderId: number;
-  year: string;
+  estimateNo: number;
+  firstName: string;
+  lastName: string;
+  carYear: string;
   make: string;
   model: string;
+  engineType: string;
   license: string;
   status: string;
   date: Date;

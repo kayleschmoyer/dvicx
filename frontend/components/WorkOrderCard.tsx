@@ -5,9 +5,12 @@ import { useTheme } from '../hooks';
 interface Props {
   order: {
     estimateNo: number;
-    vehYear: string;
+    firstName: string;
+    lastName: string;
+    carYear: string;
     vehMake: string;
     vehModel: string;
+    engineType: string;
     license: string;
     date: string;
     status: string;
@@ -32,7 +35,10 @@ export default function WorkOrderCard({ order, onPress, style }: Props) {
     <Animated.View style={[styles.card, style, { opacity: fadeAnim, backgroundColor: theme.background }]}>
       <TouchableOpacity onPress={onPress}>
         <Text style={[styles.title, { color: theme.text }]}>WO #{order.estimateNo}</Text>
-        <Text style={[styles.text, { color: theme.text }]}>{order.vehYear} {order.vehMake} {order.vehModel}</Text>
+        <Text style={[styles.customer, { color: theme.text }]}>{order.firstName} {order.lastName}</Text>
+        <Text style={[styles.text, { color: theme.text }]}>
+          {order.carYear} {order.vehMake} {order.vehModel} {order.engineType}
+        </Text>
         <Text style={[styles.text, { color: theme.text }]}>License: {order.license}</Text>
         <Text style={[styles.sub, { color: theme.text }]}>{new Date(order.date).toLocaleDateString()} • {order.status}</Text>
       </TouchableOpacity>
@@ -59,6 +65,11 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     fontFamily: 'Inter',
+  },
+  customer: {
+    fontSize: 16,
+    fontFamily: 'Inter',
+    marginBottom: 2,
   },
   sub: {
     marginTop: 6,
