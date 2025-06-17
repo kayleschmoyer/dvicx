@@ -1,12 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import * as mechanicService from '../services/mechanicService';
 import {
   mechanicsParamsSchema,
   mechanicLoginSchema,
 } from '../validators/mechanicValidator';
-
-const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export async function getMechanics(
   req: Request,
@@ -38,16 +35,10 @@ export async function verifyLogin(
       res.status(401).json({ error: 'Invalid credentials', status: 401 });
       return;
     }
-    const token = jwt.sign(
-      { mechanicId: mech.mechanicId, role: mech.role },
-      JWT_SECRET,
-      { expiresIn: '1h' }
-    );
     res.json({
-      mechanicId: mech.mechanicId,
+      mechanicNumber: mech.mechanicId,
       name: mech.name,
       role: mech.role,
-      token,
     });
   } catch (error: any) {
     if (error?.issues) {

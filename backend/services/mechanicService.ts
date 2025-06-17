@@ -7,16 +7,15 @@ export async function list(companyId: number): Promise<Mechanic[]> {
     .request()
     .input('shopId', sql.Int, companyId)
     .query(
-      `SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD
+      `SELECT MECHANIC_NUMBER, HOME_SHOP, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD
        FROM MECHANIC
        WHERE HOME_SHOP = @shopId
-         AND MobileEnabled = 1
-         AND ISNULL(POPUP_TYPE, '') <> ''
-         AND UPPER(CERTIFICATE_NUMBER) <> 'EXPIRED'`
+         AND MobileEnabled = 1`
     );
 
   return result.recordset.map((r: any) => ({
     mechanicId: r.MECHANIC_NUMBER,
+    homeShop: r.HOME_SHOP,
     name: r.MECHANIC_NAME,
     role: r.POPUP_TYPE,
     pin: r.TIME_CLOCK_PASSWORD,
@@ -35,14 +34,12 @@ export async function verifyLogin(
     .input('mechanicNumber', sql.Int, mechanicNumber)
     .input('pin', sql.VarChar, pin)
     .query(
-      `SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD
+      `SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE
        FROM MECHANIC
        WHERE MECHANIC_NUMBER = @mechanicNumber
          AND TIME_CLOCK_PASSWORD = @pin
          AND HOME_SHOP = @shopId
-         AND MobileEnabled = 1
-         AND ISNULL(POPUP_TYPE, '') <> ''
-         AND UPPER(CERTIFICATE_NUMBER) <> 'EXPIRED'`
+         AND MobileEnabled = 1`
     );
 
   const row = result.recordset[0];
@@ -52,6 +49,5 @@ export async function verifyLogin(
     mechanicId: row.MECHANIC_NUMBER,
     name: row.MECHANIC_NAME,
     role: row.POPUP_TYPE,
-    pin: row.TIME_CLOCK_PASSWORD,
   };
 }
