@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+} from 'react-native';
 import { AuthContext } from '../contexts';
 import { useTheme } from '../hooks';
 import { getMechanics, verifyMechanicLogin } from '../services/api';
@@ -15,6 +21,7 @@ export default function MechanicSelectScreen() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<number | null>(null);
   const [modal, setModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -23,6 +30,7 @@ export default function MechanicSelectScreen() {
         setMechanics(list);
       } catch (e) {
         console.error(e);
+        setError('Failed to load mechanics');
       } finally {
         setLoading(false);
       }
@@ -61,6 +69,9 @@ export default function MechanicSelectScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
+      {error && (
+        <Text style={[styles.error, { color: theme.accent }]}>{error}</Text>
+      )}
       <FlatList
         data={mechanics}
         keyExtractor={(m) => m.mechanicNumber.toString()}
@@ -84,4 +95,5 @@ export default function MechanicSelectScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  error: { textAlign: 'center', margin: 16 },
 });
