@@ -4,7 +4,7 @@ import { AuthContext } from '../contexts';
 import { useTheme } from '../hooks';
 import { getWorkOrders } from '../services/api';
 import WorkOrderCard from '../components/WorkOrderCard';
-import { ThemeToggle, SyncStatusBadge } from '../components';
+import { ThemeToggle, SyncStatusBadge, Button } from '../components';
 import { useNavigation } from '@react-navigation/native';
 
 interface WorkOrder {
@@ -21,7 +21,7 @@ interface WorkOrder {
 }
 
 export default function WorkOrdersScreen() {
-  const { mechanicId } = useContext(AuthContext);
+  const { mechanicId, logout } = useContext(AuthContext);
   const { theme } = useTheme();
   const [orders, setOrders] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,6 +56,7 @@ export default function WorkOrdersScreen() {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <SyncStatusBadge />
       <ThemeToggle />
+      <Button title="Logout" onPress={logout} style={styles.logoutButton} />
       {error ? (
         <View style={styles.center}>
           <Text style={[styles.emptyText, { color: theme.text }]}>{error}</Text>
@@ -94,5 +95,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Inter',
     marginTop: 20,
+  },
+  logoutButton: {
+    alignSelf: 'flex-end',
+    marginRight: 16,
+    marginBottom: 8,
   },
 });
