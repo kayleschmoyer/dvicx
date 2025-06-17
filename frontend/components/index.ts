@@ -6,3 +6,5 @@ export { default as PhotoUploader } from './PhotoUploader';
 export { default as InspectionItemCard } from './InspectionItemCard';
 export { default as ThemeToggle } from './ThemeToggle';
 export { default as SyncStatusBadge } from './SyncStatusBadge';
+export { default as MechanicCard } from './MechanicCard';
+export { default as PinModal } from './PinModal';

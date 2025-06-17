@@ -19,5 +19,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 4,
     marginBottom: 12,
+    fontFamily: 'Inter',
   },
 });
