@@ -5,9 +5,14 @@ export async function list(companyId: number): Promise<Mechanic[]> {
   const pool = await poolPromise;
   const result = await pool
     .request()
-    .input('companyId', sql.Int, companyId)
+    .input('shopId', sql.Int, companyId)
     .query(
-      'SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD FROM MECHANIC WHERE COMPANY_NUMBER = @companyId AND MobileEnabled = 1'
+      `SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD
+       FROM MECHANIC
+       WHERE HOME_SHOP = @shopId
+         AND MobileEnabled = 1
+         AND ISNULL(POPUP_TYPE, '') <> ''
+         AND UPPER(CERTIFICATE_NUMBER) <> 'EXPIRED'`
     );
 
   return result.recordset.map((r: any) => ({
@@ -26,11 +31,18 @@ export async function verifyLogin(
   const pool = await poolPromise;
   const result = await pool
     .request()
-    .input('companyId', sql.Int, companyId)
+    .input('shopId', sql.Int, companyId)
     .input('mechanicNumber', sql.Int, mechanicNumber)
     .input('pin', sql.VarChar, pin)
     .query(
-      'SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD FROM MECHANIC WHERE MECHANIC_NUMBER = @mechanicNumber AND TIME_CLOCK_PASSWORD = @pin AND COMPANY_NUMBER = @companyId AND MobileEnabled = 1'
+      `SELECT MECHANIC_NUMBER, MECHANIC_NAME, POPUP_TYPE, TIME_CLOCK_PASSWORD
+       FROM MECHANIC
+       WHERE MECHANIC_NUMBER = @mechanicNumber
+         AND TIME_CLOCK_PASSWORD = @pin
+         AND HOME_SHOP = @shopId
+         AND MobileEnabled = 1
+         AND ISNULL(POPUP_TYPE, '') <> ''
+         AND UPPER(CERTIFICATE_NUMBER) <> 'EXPIRED'`
     );
 
   const row = result.recordset[0];
