@@ -7,16 +7,20 @@ export async function findByTechId(techId: number): Promise<WorkOrder[]> {
     .request()
     .input('TechID', sql.Int, techId)
     .query(
-      `SELECT ESTIMATE_NO, TECH_ID, VEH_YEAR, VEH_MAKE, VEH_MODEL, LICENSE, DATE, STATUS FROM ESTMTEHDR WHERE TECH_ID = @TechID`
+      `SELECT ESTIMATE_NO, TECH_ID, FIRST_NAME, LAST_NAME, CAR_YEAR, VEH_MAKE, VEH_MODEL, ENGINE_TYPE, LIC_NUMBER, DATE, STATUS
+       FROM ESTMTEHDR WHERE TECH_ID = @TechID`
     );
 
   return result.recordset.map((row: any) => ({
     estimateNo: row.ESTIMATE_NO,
     techId: row.TECH_ID,
-    vehYear: row.VEH_YEAR,
+    firstName: row.FIRST_NAME,
+    lastName: row.LAST_NAME,
+    carYear: row.CAR_YEAR,
     vehMake: row.VEH_MAKE,
     vehModel: row.VEH_MODEL,
-    license: row.LICENSE,
+    engineType: row.ENGINE_TYPE,
+    license: row.LIC_NUMBER,
     date: row.DATE,
     status: row.STATUS,
   }));

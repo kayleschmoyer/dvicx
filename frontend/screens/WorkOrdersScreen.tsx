@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, FlatList, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { AuthContext } from '../contexts';
 import { useTheme } from '../hooks';
 import { getWorkOrders } from '../services/api';
@@ -9,9 +9,12 @@ import { useNavigation } from '@react-navigation/native';
 
 interface WorkOrder {
   estimateNo: number;
-  vehYear: string;
+  firstName: string;
+  lastName: string;
+  carYear: string;
   vehMake: string;
   vehModel: string;
+  engineType: string;
   license: string;
   date: string;
   status: string;
@@ -51,17 +54,23 @@ export default function WorkOrdersScreen() {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <SyncStatusBadge />
       <ThemeToggle />
-      <FlatList
-        data={orders}
-        keyExtractor={(item) => item.estimateNo.toString()}
-        renderItem={({ item }) => (
-          <WorkOrderCard
-            order={item}
-            onPress={() => navigation.navigate('Inspection', { order: item })}
-          />
-        )}
-        contentContainerStyle={{ padding: 16 }}
-      />
+      {orders.length === 0 ? (
+        <View style={styles.center}>
+          <Text style={[styles.emptyText, { color: theme.text }]}>No work orders assigned</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={orders}
+          keyExtractor={(item) => item.estimateNo.toString()}
+          renderItem={({ item }) => (
+            <WorkOrderCard
+              order={item}
+              onPress={() => navigation.navigate('Inspection', { order: item })}
+            />
+          )}
+          contentContainerStyle={{ padding: 16 }}
+        />
+      )}
     </View>
   );
 }
@@ -74,5 +83,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    fontFamily: 'Inter',
+    marginTop: 20,
   },
 });
