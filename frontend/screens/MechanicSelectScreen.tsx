@@ -285,7 +285,10 @@ export default function MechanicSelectScreen() {
 
         <PinModal
           visible={modal}
-          onClose={() => setModal(false)}
+          onClose={() => {
+            setModal(false);
+            setSelected(null);
+          }}
           onSubmit={handleLogin}
         />
       </View>

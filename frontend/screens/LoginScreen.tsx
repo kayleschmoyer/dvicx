@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { TextInput, Button, ThemeToggle, SyncStatusBadge } from '../components';
 import { loginMechanic } from '../services/api';
 import { AuthContext } from '../contexts';
@@ -8,6 +9,7 @@ import { useTheme } from '../hooks';
 export default function LoginScreen() {
   const { login } = useContext(AuthContext);
   const { theme } = useTheme();
+  const navigation = useNavigation<any>();
   const [mechanicId, setMechanicId] = useState('');
   const [pin, setPin] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,7 +52,13 @@ export default function LoginScreen() {
         keyboardType="number-pad"
       />
       {error && <Text style={styles.error}>{error}</Text>}
-      <Button title="Login" onPress={handleSubmit} loading={loading} style={styles.button} />
+      <Button
+        title="Login"
+        onPress={handleSubmit}
+        loading={loading}
+        style={styles.button}
+      />
+      <Button title="Cancel" onPress={() => navigation.goBack()} style={styles.button} />
     </View>
   );
 }

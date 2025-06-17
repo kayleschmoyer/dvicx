@@ -25,6 +25,7 @@ export default function WorkOrdersScreen() {
   const { theme } = useTheme();
   const [orders, setOrders] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigation = useNavigation<any>();
 
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function WorkOrdersScreen() {
         setOrders(data);
       } catch (e) {
         console.error(e);
+        setError('Failed to load work orders');
       } finally {
         setLoading(false);
       }
@@ -54,7 +56,11 @@ export default function WorkOrdersScreen() {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <SyncStatusBadge />
       <ThemeToggle />
-      {orders.length === 0 ? (
+      {error ? (
+        <View style={styles.center}>
+          <Text style={[styles.emptyText, { color: theme.text }]}>{error}</Text>
+        </View>
+      ) : orders.length === 0 ? (
         <View style={styles.center}>
           <Text style={[styles.emptyText, { color: theme.text }]}>No work orders assigned</Text>
         </View>
