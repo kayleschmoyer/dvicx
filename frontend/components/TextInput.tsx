@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { TextInput as RNTextInput, TextInputProps, StyleSheet } from 'react-native';
-import { ThemeContext } from '../contexts';
+import { useTheme } from '../hooks';
 
 export default function TextInput(props: TextInputProps) {
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useTheme();
   return (
     <RNTextInput
       placeholderTextColor="#666"

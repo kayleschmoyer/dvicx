@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { TextInput, Button, ThemeToggle } from '../components';
+import { TextInput, Button, ThemeToggle, SyncStatusBadge } from '../components';
 import api from '../services/api';
-import { AuthContext, ThemeContext } from '../contexts';
+import { AuthContext } from '../contexts';
+import { useTheme } from '../hooks';
 
 export default function LoginScreen() {
   const { login } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const [mechanicId, setMechanicId] = useState('');
   const [pin, setPin] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,6 +33,7 @@ export default function LoginScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <SyncStatusBadge />
       <ThemeToggle />
       <Text style={[styles.title, { color: theme.text }]}>Mechanic Login</Text>
       <TextInput
