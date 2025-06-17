@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { AuthContext } from '../contexts';
 import { useTheme } from '../hooks';
-import { getMechanics, verifyMechanicLogin } from '../services/api';
+import { getMechanics, loginMechanic } from '../services/api';
 import MechanicCard from '../components/MechanicCard';
 import PinModal from '../components/PinModal';
 
@@ -54,14 +54,13 @@ export default function MechanicSelectScreen() {
         pin,
       });
 
-      const res = await verifyMechanicLogin({
-        companyId: COMPANY_ID,
-        mechanicNumber: parseInt(selected, 10),
+      const res = await loginMechanic({
+        mechanicId: parseInt(selected, 10),
         pin,
       });
 
       console.log('✅ Login success:', res);
-      login(res.mechanicId, res.token);
+      login(String(res.mechanicId), res.token);
     } catch (e) {
       console.error('❌ Login failed:', e);
       setError('Incorrect PIN or login failed.');
