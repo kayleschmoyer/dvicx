@@ -22,7 +22,7 @@ interface WorkOrder {
 }
 
 export default function WorkOrdersScreen() {
-  const { mechanicId, logout } = useContext(AuthContext);
+  const { mechanicId, token, logout } = useContext(AuthContext);
   const { theme } = useTheme();
   const [orders, setOrders] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ export default function WorkOrdersScreen() {
       if (!mechanicId) return;
       try {
         console.log('📡 Fetching work orders for mechanic ID:', mechanicId);
-        const data = await getWorkOrders(mechanicId);
+        const data = await getWorkOrders(mechanicId, token || undefined);
         console.log('✅ Work orders loaded:', data);
         setOrders(data);
         if (Array.isArray(data) && data.length === 0) {
@@ -57,7 +57,7 @@ export default function WorkOrdersScreen() {
       }
     };
     load();
-  }, [mechanicId]);
+  }, [mechanicId, token]);
 
   if (loading) {
     return (
