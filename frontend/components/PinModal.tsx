@@ -31,6 +31,7 @@ export default function PinModal({ visible, onSubmit, onClose }: Props) {
       visible={visible}
       transparent
       animationType="fade"
+      onShow={() => inputRef.current?.focus()}
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
