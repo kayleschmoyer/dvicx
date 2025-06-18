@@ -4,8 +4,10 @@ const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL || 'http://192.168.7.185:3000/api',
 });
 
-export async function getWorkOrders(mechanicId: string) {
-  const response = await api.get(`/work-orders/${mechanicId}`);
+export async function getWorkOrders(mechanicId: string, token?: string) {
+  const response = await api.get(`/work-orders/${mechanicId}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  });
   return response.data;
 }
 
