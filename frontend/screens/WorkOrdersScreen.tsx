@@ -33,16 +33,23 @@ export default function WorkOrdersScreen() {
     const load = async () => {
       if (!mechanicId) return;
       try {
+        console.log('📡 Fetching work orders for mechanic ID:', mechanicId);
         const data = await getWorkOrders(mechanicId);
+        console.log('✅ Work orders loaded:', data);
         setOrders(data);
         if (Array.isArray(data) && data.length === 0) {
           setError('No work orders assigned to this mechanic');
         }
       } catch (err) {
-        console.error(err);
-        if (axios.isAxiosError(err) && err.response?.status === 404) {
-          setError('No work orders assigned to this mechanic');
+        if (axios.isAxiosError(err)) {
+          console.error('❌ Error loading work orders:', err.response?.data || err.message);
+          if (err.response?.status === 404) {
+            setError('No work orders assigned to this mechanic');
+          } else {
+            setError('Failed to load work orders');
+          }
         } else {
+          console.error('❌ Error loading work orders:', err);
           setError('Failed to load work orders');
         }
       } finally {
