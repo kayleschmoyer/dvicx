@@ -17,7 +17,7 @@ import { getMechanics, loginMechanic } from '../services/api';
 import PinModal from '../components/PinModal';
 
 const COMPANY_ID = 7638;
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 // Klipboard Brand Colors
 const COLORS = {
@@ -31,6 +31,71 @@ const COLORS = {
   mediumGray: '#6C757D',
   darkGray: '#495057',
   shadow: 'rgba(33, 33, 33, 0.15)',
+  overlay: 'rgba(33, 33, 33, 0.05)',
+};
+
+// Enhanced Typography Scale
+const TYPOGRAPHY = {
+  displayLarge: {
+    fontSize: 32,
+    fontWeight: '800' as '800',
+    letterSpacing: -1.2,
+    lineHeight: 38,
+  },
+  headlineLarge: {
+    fontSize: 24,
+    fontWeight: '700' as '700',
+    letterSpacing: -0.6,
+    lineHeight: 30,
+  },
+  headlineMedium: {
+    fontSize: 20,
+    fontWeight: '700' as '700',
+    letterSpacing: -0.4,
+    lineHeight: 26,
+  },
+  titleLarge: {
+    fontSize: 18,
+    fontWeight: '600' as '600',
+    letterSpacing: -0.2,
+    lineHeight: 24,
+  },
+  titleMedium: {
+    fontSize: 16,
+    fontWeight: '600' as '600',
+    letterSpacing: -0.1,
+    lineHeight: 22,
+  },
+  bodyLarge: {
+    fontSize: 16,
+    fontWeight: '400' as '400',
+    letterSpacing: 0,
+    lineHeight: 24,
+  },
+  bodyMedium: {
+    fontSize: 14,
+    fontWeight: '400' as '400',
+    letterSpacing: 0,
+    lineHeight: 20,
+  },
+  labelLarge: {
+    fontSize: 14,
+    fontWeight: '600' as '600',
+    letterSpacing: 0.1,
+    lineHeight: 18,
+  },
+  labelMedium: {
+    fontSize: 12,
+    fontWeight: '600' as '600',
+    letterSpacing: 0.5,
+    lineHeight: 16,
+  },
+  labelSmall: {
+    fontSize: 11,
+    fontWeight: '500' as '500',
+    letterSpacing: 0.8,
+    lineHeight: 14,
+  },
 };
 
 interface EnhancedMechanicCardProps {
@@ -45,19 +110,20 @@ const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({
   index 
 }) => {
   const animatedValue = new Animated.Value(0);
+  const scaleValue = new Animated.Value(1);
   
   React.useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: 1,
-      duration: 300,
-      delay: index * 100,
+      duration: 400,
+      delay: index * 80,
       useNativeDriver: true,
     }).start();
   }, []);
 
   const translateY = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [50, 0],
+    outputRange: [30, 0],
   });
 
   const opacity = animatedValue.interpolate({
@@ -65,50 +131,80 @@ const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({
     outputRange: [0, 1],
   });
 
+  const handlePressIn = () => {
+    Animated.spring(scaleValue, {
+      toValue: 0.96,
+      useNativeDriver: true,
+      tension: 300,
+      friction: 10,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleValue, {
+      toValue: 1,
+      useNativeDriver: true,
+      tension: 300,
+      friction: 10,
+    }).start();
+  };
+
+  const getInitials = (firstName: string, lastName: string) => {
+    const first = firstName?.[0]?.toUpperCase() || '';
+    const last = lastName?.[0]?.toUpperCase() || '';
+    return first + last || '?';
+  };
+
   return (
     <Animated.View
       style={[
         styles.mechanicCardContainer,
         {
           opacity,
-          transform: [{ translateY }],
+          transform: [{ translateY }, { scale: scaleValue }],
         },
       ]}
     >
       <Pressable
-        style={({ pressed }) => [
-          styles.mechanicCard,
-          pressed && styles.mechanicCardPressed,
-        ]}
+        style={styles.mechanicCard}
         onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         android_ripple={{
-          color: COLORS.magenta + '20',
+          color: COLORS.magenta + '15',
           borderless: false,
+          radius: 180,
         }}
       >
-        <View style={styles.mechanicAvatar}>
-          <Text style={styles.mechanicInitials}>
-            {mechanic.firstName?.[0]?.toUpperCase() || '?'}
-            {mechanic.lastName?.[0]?.toUpperCase() || ''}
-          </Text>
-        </View>
-        
-        <View style={styles.mechanicInfo}>
-          <Text style={styles.mechanicName}>
-            {mechanic.firstName} {mechanic.lastName}
-          </Text>
-          <Text style={styles.mechanicId}>
-            ID: {mechanic.mechanicId}
-          </Text>
-          <View style={styles.mechanicBadge}>
-            <View style={styles.statusDot} />
-            <Text style={styles.statusText}>Available</Text>
+        <View style={styles.cardContent}>
+          <View style={styles.mechanicAvatar}>
+            <Text style={styles.mechanicInitials}>
+              {getInitials(mechanic.firstName, mechanic.lastName)}
+            </Text>
+            <View style={styles.avatarGlow} />
           </View>
-        </View>
-        
-        <View style={styles.mechanicAction}>
-          <View style={styles.actionIcon}>
-            <Text style={styles.actionIconText}>→</Text>
+          
+          <View style={styles.mechanicInfo}>
+            <Text style={[styles.mechanicName, TYPOGRAPHY.titleLarge]}>
+              {mechanic.firstName} {mechanic.lastName}
+            </Text>
+            <Text style={[styles.mechanicId, TYPOGRAPHY.bodyMedium]}>
+              ID: {mechanic.mechanicId}
+            </Text>
+            <View style={styles.mechanicBadge}>
+              <View style={styles.statusIndicator}>
+                <View style={styles.statusDot} />
+                <Text style={[styles.statusText, TYPOGRAPHY.labelMedium]}>
+                  AVAILABLE
+                </Text>
+              </View>
+            </View>
+          </View>
+          
+          <View style={styles.mechanicAction}>
+            <View style={styles.actionButton}>
+              <Text style={styles.actionButtonText}>→</Text>
+            </View>
           </View>
         </View>
       </Pressable>
@@ -177,14 +273,17 @@ export default function MechanicSelectScreen() {
         <StatusBar barStyle="light-content" backgroundColor={COLORS.charcoal} />
         <View style={styles.loadingContainer}>
           <View style={styles.loadingCard}>
-            <View style={styles.loadingIconContainer}>
+            <View style={styles.loadingAnimation}>
               <ActivityIndicator 
                 size="large" 
                 color={COLORS.magenta} 
               />
+              <View style={styles.loadingPulse} />
             </View>
-            <Text style={styles.loadingTitle}>Loading Team</Text>
-            <Text style={styles.loadingSubtitle}>
+            <Text style={[styles.loadingTitle, TYPOGRAPHY.headlineMedium]}>
+              Loading Team
+            </Text>
+            <Text style={[styles.loadingSubtitle, TYPOGRAPHY.bodyMedium]}>
               Fetching available mechanics for inspection
             </Text>
           </View>
@@ -199,70 +298,104 @@ export default function MechanicSelectScreen() {
       
       {/* Enhanced Header */}
       <View style={styles.headerContainer}>
-        <View style={styles.headerGradient} />
+        <View style={styles.headerBackground} />
         <View style={styles.headerContent}>
           <View style={styles.headerTop}>
-            <View>
-              <Text style={styles.headerTitle}>Select Mechanic</Text>
-              <Text style={styles.headerSubtitle}>
+            <View style={styles.headerText}>
+              <Text style={[styles.headerTitle, TYPOGRAPHY.displayLarge]}>
+                Select Mechanic
+              </Text>
+              <Text style={[styles.headerSubtitle, TYPOGRAPHY.bodyLarge]}>
                 Choose your profile to begin inspection
               </Text>
             </View>
-            <View style={styles.headerLogo}>
-              <Text style={styles.logoText}>K</Text>
+            <View style={styles.headerBrand}>
+              <View style={styles.brandLogo}>
+                <Text style={[styles.logoText, TYPOGRAPHY.headlineLarge]}>K</Text>
+              </View>
             </View>
           </View>
         </View>
-        <View style={styles.headerAccent} />
+        <View style={styles.headerDivider} />
       </View>
 
       <View style={styles.container}>
-        {/* Error Message */}
+        {/* Enhanced Error Message */}
         {error && (
           <View style={styles.errorContainer}>
-            <View style={styles.errorHeader}>
-              <View style={styles.errorIcon}>
-                <Text style={styles.errorIconText}>⚠</Text>
+            <View style={styles.errorCard}>
+              <View style={styles.errorHeader}>
+                <View style={styles.errorIconContainer}>
+                  <Text style={styles.errorIcon}>⚠</Text>
+                </View>
+                <View style={styles.errorContent}>
+                  <Text style={[styles.errorTitle, TYPOGRAPHY.titleLarge]}>
+                    Authentication Failed
+                  </Text>
+                  <Text style={[styles.errorMessage, TYPOGRAPHY.bodyMedium]}>
+                    {error}
+                  </Text>
+                </View>
               </View>
-              <Text style={styles.errorTitle}>Authentication Failed</Text>
+              <Pressable 
+                style={styles.errorButton}
+                onPress={() => setError(null)}
+              >
+                <Text style={[styles.errorButtonText, TYPOGRAPHY.labelLarge]}>
+                  Dismiss
+                </Text>
+              </Pressable>
             </View>
-            <Text style={styles.errorMessage}>{error}</Text>
-            <Pressable 
-              style={styles.errorButton}
-              onPress={() => setError(null)}
-            >
-              <Text style={styles.errorButtonText}>Dismiss</Text>
-            </Pressable>
           </View>
         )}
 
-        {/* Content */}
+        {/* Main Content */}
         {mechanics.length === 0 ? (
           <View style={styles.emptyStateContainer}>
             <View style={styles.emptyStateCard}>
-              <View style={styles.emptyStateIcon}>
-                <Text style={styles.emptyStateIconText}>👥</Text>
+              <View style={styles.emptyStateHeader}>
+                <View style={styles.emptyStateIcon}>
+                  <Text style={styles.emptyStateEmoji}>👥</Text>
+                </View>
+                <Text style={[styles.emptyStateTitle, TYPOGRAPHY.headlineLarge]}>
+                  No Mechanics Available
+                </Text>
+                <Text style={[styles.emptyStateMessage, TYPOGRAPHY.bodyLarge]}>
+                  Unable to find any mechanics for company ID {COMPANY_ID}.
+                </Text>
               </View>
-              <Text style={styles.emptyStateTitle}>No Mechanics Available</Text>
-              <Text style={styles.emptyStateMessage}>
-                Unable to find any mechanics for company ID {COMPANY_ID}.
-              </Text>
+              
               <View style={styles.emptyStateDetails}>
-                <Text style={styles.detailsTitle}>Required Configuration:</Text>
-                <Text style={styles.detailsItem}>• MobileEnabled = 1</Text>
-                <Text style={styles.detailsItem}>• HOME_SHOP = {COMPANY_ID}</Text>
+                <Text style={[styles.detailsTitle, TYPOGRAPHY.labelLarge]}>
+                  Required Configuration:
+                </Text>
+                <View style={styles.detailsList}>
+                  <Text style={[styles.detailsItem, TYPOGRAPHY.bodyMedium]}>
+                    • MobileEnabled = 1
+                  </Text>
+                  <Text style={[styles.detailsItem, TYPOGRAPHY.bodyMedium]}>
+                    • HOME_SHOP = {COMPANY_ID}
+                  </Text>
+                </View>
               </View>
+              
               <Pressable style={styles.contactButton}>
-                <Text style={styles.contactButtonText}>Contact Administrator</Text>
+                <Text style={[styles.contactButtonText, TYPOGRAPHY.titleMedium]}>
+                  Contact Administrator
+                </Text>
               </Pressable>
             </View>
           </View>
         ) : (
           <View style={styles.mechanicsSection}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Team Members</Text>
+              <Text style={[styles.sectionTitle, TYPOGRAPHY.headlineMedium]}>
+                Team Members
+              </Text>
               <View style={styles.countBadge}>
-                <Text style={styles.countText}>{mechanics.length}</Text>
+                <Text style={[styles.countText, TYPOGRAPHY.labelLarge]}>
+                  {mechanics.length}
+                </Text>
               </View>
             </View>
             
@@ -302,7 +435,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.charcoal,
   },
 
-  // Loading States
+  // Enhanced Loading States
   loadingContainer: {
     flex: 1,
     backgroundColor: COLORS.biscuit,
@@ -312,42 +445,48 @@ const styles = StyleSheet.create({
   },
   loadingCard: {
     backgroundColor: COLORS.white,
-    borderRadius: 20,
-    paddingVertical: 48,
-    paddingHorizontal: 32,
+    borderRadius: 24,
+    paddingVertical: 56,
+    paddingHorizontal: 40,
     alignItems: 'center',
     shadowColor: COLORS.shadow,
-    shadowOffset: { width: 0, height: 12 },
+    shadowOffset: { width: 0, height: 16 },
     shadowOpacity: 1,
-    shadowRadius: 24,
-    elevation: 12,
+    shadowRadius: 32,
+    elevation: 16,
     width: width * 0.85,
-    maxWidth: 320,
+    maxWidth: 340,
   },
-  loadingIconContainer: {
-    marginBottom: 24,
+  loadingAnimation: {
+    position: 'relative',
+    marginBottom: 32,
+  },
+  loadingPulse: {
+    position: 'absolute',
+    top: -10,
+    left: -10,
+    right: -10,
+    bottom: -10,
+    borderRadius: 30,
+    backgroundColor: COLORS.magenta + '10',
   },
   loadingTitle: {
-    fontSize: 20,
-    fontWeight: '700',
     color: COLORS.charcoal,
     marginBottom: 8,
-    letterSpacing: -0.3,
+    textAlign: 'center',
   },
   loadingSubtitle: {
-    fontSize: 15,
     color: COLORS.mediumGray,
     textAlign: 'center',
-    lineHeight: 22,
   },
 
-  // Enhanced Header
+  // Premium Header Design
   headerContainer: {
     backgroundColor: COLORS.charcoal,
     position: 'relative',
-    paddingBottom: 32,
+    paddingBottom: 40,
   },
-  headerGradient: {
+  headerBackground: {
     position: 'absolute',
     top: 0,
     left: 0,
@@ -357,47 +496,52 @@ const styles = StyleSheet.create({
   },
   headerContent: {
     paddingHorizontal: 24,
-    paddingTop: 20,
+    paddingTop: 24,
   },
   headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
   },
+  headerText: {
+    flex: 1,
+    paddingRight: 16,
+  },
   headerTitle: {
-    fontSize: 32,
-    fontWeight: '800',
     color: COLORS.white,
-    marginBottom: 6,
-    letterSpacing: -0.8,
+    marginBottom: 8,
   },
   headerSubtitle: {
-    fontSize: 16,
     color: COLORS.biscuit,
-    fontWeight: '400',
     opacity: 0.9,
-    lineHeight: 22,
   },
-  headerLogo: {
-    width: 48,
-    height: 48,
-    backgroundColor: COLORS.magenta,
-    borderRadius: 12,
-    justifyContent: 'center',
+  headerBrand: {
     alignItems: 'center',
   },
+  brandLogo: {
+    width: 56,
+    height: 56,
+    backgroundColor: COLORS.magenta,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: COLORS.magenta,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
+  },
   logoText: {
-    fontSize: 20,
-    fontWeight: '800',
     color: COLORS.white,
   },
-  headerAccent: {
+  headerDivider: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: 4,
+    height: 1,
     backgroundColor: COLORS.magenta,
+    opacity: 0.5,
   },
 
   // Main Container
@@ -406,64 +550,62 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.biscuit,
   },
 
-  // Enhanced Error States
+  // Refined Error States
   errorContainer: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+  },
+  errorCard: {
     backgroundColor: COLORS.white,
-    marginHorizontal: 24,
-    marginTop: 24,
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 24,
-    borderLeftWidth: 6,
+    borderLeftWidth: 4,
     borderLeftColor: COLORS.errorRed,
     shadowColor: COLORS.shadow,
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 1,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowRadius: 24,
+    elevation: 12,
   },
   errorHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 20,
   },
-  errorIcon: {
-    width: 32,
-    height: 32,
+  errorIconContainer: {
+    width: 40,
+    height: 40,
     backgroundColor: COLORS.errorRed + '15',
-    borderRadius: 16,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 16,
   },
-  errorIconText: {
-    fontSize: 16,
+  errorIcon: {
+    fontSize: 18,
     color: COLORS.errorRed,
+  },
+  errorContent: {
+    flex: 1,
   },
   errorTitle: {
-    fontSize: 18,
-    fontWeight: '700',
     color: COLORS.errorRed,
+    marginBottom: 6,
   },
   errorMessage: {
-    fontSize: 15,
     color: COLORS.darkGray,
-    lineHeight: 22,
-    marginBottom: 16,
   },
   errorButton: {
     backgroundColor: COLORS.errorRed + '10',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
     alignSelf: 'flex-start',
   },
   errorButtonText: {
     color: COLORS.errorRed,
-    fontWeight: '600',
-    fontSize: 14,
   },
 
-  // Enhanced Empty State
+  // Sophisticated Empty State
   emptyStateContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -472,193 +614,202 @@ const styles = StyleSheet.create({
   },
   emptyStateCard: {
     backgroundColor: COLORS.white,
-    borderRadius: 20,
-    padding: 32,
+    borderRadius: 24,
+    padding: 40,
     alignItems: 'center',
     shadowColor: COLORS.shadow,
-    shadowOffset: { width: 0, height: 12 },
+    shadowOffset: { width: 0, height: 16 },
     shadowOpacity: 1,
-    shadowRadius: 24,
-    elevation: 12,
+    shadowRadius: 32,
+    elevation: 16,
     width: '100%',
-    maxWidth: 360,
+    maxWidth: 380,
+  },
+  emptyStateHeader: {
+    alignItems: 'center',
+    marginBottom: 32,
   },
   emptyStateIcon: {
-    width: 80,
-    height: 80,
-    backgroundColor: COLORS.lightGray,
-    borderRadius: 40,
+    width: 88,
+    height: 88,
+    backgroundColor: COLORS.overlay,
+    borderRadius: 44,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 24,
   },
-  emptyStateIconText: {
-    fontSize: 36,
+  emptyStateEmoji: {
+    fontSize: 40,
   },
   emptyStateTitle: {
-    fontSize: 22,
-    fontWeight: '700',
     color: COLORS.charcoal,
     marginBottom: 12,
     textAlign: 'center',
-    letterSpacing: -0.3,
   },
   emptyStateMessage: {
-    fontSize: 16,
     color: COLORS.mediumGray,
     textAlign: 'center',
-    lineHeight: 24,
-    marginBottom: 24,
   },
   emptyStateDetails: {
     backgroundColor: COLORS.lightGray,
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 16,
+    padding: 20,
     width: '100%',
-    marginBottom: 24,
+    marginBottom: 32,
   },
   detailsTitle: {
-    fontSize: 14,
-    fontWeight: '600',
     color: COLORS.darkGray,
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  detailsList: {
+    gap: 6,
   },
   detailsItem: {
-    fontSize: 14,
     color: COLORS.mediumGray,
-    marginBottom: 4,
     fontFamily: 'monospace',
   },
   contactButton: {
     backgroundColor: COLORS.magenta,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 16,
+    shadowColor: COLORS.magenta,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
   },
   contactButtonText: {
     color: COLORS.white,
-    fontWeight: '600',
-    fontSize: 16,
   },
 
   // Mechanics Section
   mechanicsSection: {
     flex: 1,
-    paddingTop: 24,
+    paddingTop: 32,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginBottom: 20,
+    marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
     color: COLORS.charcoal,
-    letterSpacing: -0.3,
   },
   countBadge: {
     backgroundColor: COLORS.magenta,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    shadowColor: COLORS.magenta,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   countText: {
     color: COLORS.white,
-    fontSize: 14,
-    fontWeight: '600',
   },
 
-  // Enhanced Mechanic Cards
+  // Premium Mechanic Cards
   mechanicCardContainer: {
     marginHorizontal: 24,
   },
   mechanicCard: {
     backgroundColor: COLORS.white,
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 20,
+    shadowColor: COLORS.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 1,
+    shadowRadius: 20,
+    elevation: 10,
+    overflow: 'hidden',
+  },
+  cardContent: {
+    padding: 24,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: COLORS.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  mechanicCardPressed: {
-    backgroundColor: COLORS.lightGray,
-    transform: [{ scale: 0.98 }],
   },
   mechanicAvatar: {
-    width: 56,
-    height: 56,
+    position: 'relative',
+    width: 64,
+    height: 64,
     backgroundColor: COLORS.magenta,
-    borderRadius: 28,
+    borderRadius: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 20,
+  },
+  avatarGlow: {
+    position: 'absolute',
+    top: -4,
+    left: -4,
+    right: -4,
+    bottom: -4,
+    borderRadius: 36,
+    backgroundColor: COLORS.magenta + '20',
+    zIndex: -1,
   },
   mechanicInitials: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: '800',
     color: COLORS.white,
   },
   mechanicInfo: {
     flex: 1,
   },
   mechanicName: {
-    fontSize: 18,
-    fontWeight: '700',
     color: COLORS.charcoal,
-    marginBottom: 4,
-    letterSpacing: -0.2,
+    marginBottom: 6,
   },
   mechanicId: {
-    fontSize: 14,
     color: COLORS.mediumGray,
-    marginBottom: 8,
     fontFamily: 'monospace',
+    marginBottom: 12,
   },
   mechanicBadge: {
+    alignSelf: 'flex-start',
+  },
+  statusIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: COLORS.successGreen + '15',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 12,
   },
   statusDot: {
-    width: 8,
-    height: 8,
+    width: 6,
+    height: 6,
     backgroundColor: COLORS.successGreen,
-    borderRadius: 4,
-    marginRight: 6,
+    borderRadius: 3,
+    marginRight: 8,
   },
   statusText: {
-    fontSize: 12,
     color: COLORS.successGreen,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
   mechanicAction: {
-    marginLeft: 16,
+    marginLeft: 20,
   },
-  actionIcon: {
-    width: 40,
-    height: 40,
+  actionButton: {
+    width: 48,
+    height: 48,
     backgroundColor: COLORS.magenta + '15',
-    borderRadius: 20,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  actionIconText: {
-    fontSize: 18,
-    color: COLORS.magenta,
+  actionButtonText: {
+    fontSize: 20,
     fontWeight: '600',
+    color: COLORS.magenta,
   },
 
   // List Styling
   listContent: {
-    paddingBottom: 32,
+    paddingBottom: 40,
   },
   itemSeparator: {
     height: 16,
