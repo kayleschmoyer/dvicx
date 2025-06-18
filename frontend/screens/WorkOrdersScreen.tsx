@@ -18,7 +18,7 @@ import { AuthContext } from '../contexts';
 import { useTheme } from '../hooks';
 import { getWorkOrders } from '../services/api';
 import WorkOrderCard from '../components/WorkOrderCard';
-import { ThemeToggle, SyncStatusBadge, Button } from '../components';
+import { SyncStatusBadge, Button } from '../components';
 import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
@@ -374,7 +374,6 @@ export default function WorkOrdersScreen() {
             </View>
             <View style={styles.headerControls}>
               <SyncStatusBadge />
-              <ThemeToggle />
             </View>
           </View>
           
