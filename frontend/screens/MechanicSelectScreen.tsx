@@ -111,6 +111,7 @@ const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({
 }) => {
   const animatedValue = new Animated.Value(0);
   const scaleValue = new Animated.Value(1);
+  const { theme } = useTheme();
   
   React.useEffect(() => {
     Animated.timing(animatedValue, {
@@ -166,7 +167,7 @@ const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({
       ]}
     >
       <Pressable
-        style={styles.mechanicCard}
+        style={[styles.mechanicCard, { backgroundColor: theme.background }]}
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -185,10 +186,10 @@ const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({
           </View>
           
           <View style={styles.mechanicInfo}>
-            <Text style={[styles.mechanicName, TYPOGRAPHY.titleLarge]}>
+            <Text style={[styles.mechanicName, TYPOGRAPHY.titleLarge, { color: theme.text }]}>
               {mechanic.firstName} {mechanic.lastName}
             </Text>
-            <Text style={[styles.mechanicId, TYPOGRAPHY.bodyMedium]}>
+            <Text style={[styles.mechanicId, TYPOGRAPHY.bodyMedium, { color: theme.text }]}>
               ID: {mechanic.mechanicId}
             </Text>
             <View style={styles.mechanicBadge}>
@@ -272,7 +273,7 @@ export default function MechanicSelectScreen() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <StatusBar barStyle="light-content" backgroundColor={COLORS.charcoal} />
-        <View style={styles.loadingContainer}>
+        <View style={[styles.loadingContainer, { backgroundColor: theme.background }]}>
           <View style={styles.loadingCard}>
             <View style={styles.loadingAnimation}>
               <ActivityIndicator 
@@ -320,7 +321,7 @@ export default function MechanicSelectScreen() {
         <View style={styles.headerDivider} />
       </View>
 
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
         {/* Enhanced Error Message */}
         {error && (
           <View style={styles.errorContainer}>
@@ -440,7 +441,6 @@ const styles = StyleSheet.create({
   // Enhanced Loading States
   loadingContainer: {
     flex: 1,
-    backgroundColor: COLORS.biscuit,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
@@ -549,7 +549,6 @@ const styles = StyleSheet.create({
   // Main Container
   container: {
     flex: 1,
-    backgroundColor: COLORS.biscuit,
   },
 
   // Refined Error States
@@ -720,7 +719,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
   },
   mechanicCard: {
-    backgroundColor: COLORS.white,
     borderRadius: 20,
     shadowColor: COLORS.shadow,
     shadowOffset: { width: 0, height: 8 },
@@ -763,11 +761,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mechanicName: {
-    color: COLORS.charcoal,
     marginBottom: 6,
   },
   mechanicId: {
-    color: COLORS.mediumGray,
     fontFamily: 'monospace',
     marginBottom: 12,
   },
