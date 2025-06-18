@@ -8,8 +8,8 @@ interface Props {
     firstName: string;
     lastName: string;
     carYear: string;
-    vehMake: string;
-    vehModel: string;
+    make: string;
+    model: string;
     engineType: string;
     license: string;
     date: string;
@@ -37,7 +37,7 @@ export default function WorkOrderCard({ order, onPress, style }: Props) {
         <Text style={[styles.title, { color: theme.text }]}>WO #{order.estimateNo}</Text>
         <Text style={[styles.customer, { color: theme.text }]}>{order.firstName} {order.lastName}</Text>
         <Text style={[styles.text, { color: theme.text }]}>
-          {order.carYear} {order.vehMake} {order.vehModel} {order.engineType}
+          {order.carYear} {order.make} {order.model} {order.engineType}
         </Text>
         <Text style={[styles.text, { color: theme.text }]}>License: {order.license}</Text>
         <Text style={[styles.sub, { color: theme.text }]}>{new Date(order.date).toLocaleDateString()} • {order.status}</Text>

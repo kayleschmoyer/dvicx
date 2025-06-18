@@ -4,8 +4,8 @@ export interface WorkOrder {
   firstName: string;
   lastName: string;
   carYear: string;
-  vehMake: string;
-  vehModel: string;
+  make: string;
+  model: string;
   engineType: string;
   license: string;
   date: Date;
