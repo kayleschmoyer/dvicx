@@ -150,10 +150,11 @@ const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({
     }).start();
   };
 
-  const getInitials = (firstName: string, lastName: string) => {
-    const first = firstName?.[0]?.toUpperCase() || '';
-    const last = lastName?.[0]?.toUpperCase() || '';
-    return first + last || '?';
+  const getInitials = (name: string) => {
+    const parts = name?.trim().split(' ') || [];
+    const first = parts[0]?.[0]?.toUpperCase() || '';
+    const last = parts[1]?.[0]?.toUpperCase() || '';
+    return (first + last) || '?';
   };
 
   return (
@@ -180,14 +181,14 @@ const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({
         <View style={styles.cardContent}>
           <View style={styles.mechanicAvatar}>
             <Text style={styles.mechanicInitials}>
-              {getInitials(mechanic.firstName, mechanic.lastName)}
+              {getInitials(mechanic.name)}
             </Text>
             <View style={styles.avatarGlow} />
           </View>
           
           <View style={styles.mechanicInfo}>
             <Text style={[styles.mechanicName, TYPOGRAPHY.titleLarge, { color: theme.text }]}>
-              {mechanic.firstName} {mechanic.lastName}
+              {mechanic.name}
             </Text>
             <Text style={[styles.mechanicId, TYPOGRAPHY.bodyMedium, { color: theme.text }]}>
               ID: {mechanic.mechanicId}
