@@ -3,6 +3,7 @@ import { View, FlatList, StyleSheet, ActivityIndicator, Text } from 'react-nativ
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { getLineItems } from '../services/api';
 import { InspectionItemCard, Button, SyncStatusBadge } from '../components';
+import { DEFAULT_INSPECTION_ITEMS } from '../constants/defaultInspectionItems';
 import { SyncContext } from '../contexts';
 import { useTheme } from '../hooks';
 import type { InspectionItem } from '../components/InspectionItemCard';
@@ -27,13 +28,25 @@ export default function InspectionScreen() {
     const load = async () => {
       try {
         const data = await getLineItems(order.estimateNo);
-        setItems(data.map((it: any, idx: number) => ({
+        let mapped = data.map((it: any, idx: number) => ({
           id: it.id || idx,
           partNumber: it.PART_NUMBER || it.partNumber,
           description: it.DESCRIPTION || it.description,
           position: it.POSITION || it.position || null,
           status: null,
-        })));
+        }));
+
+        if (!mapped.length) {
+          mapped = DEFAULT_INSPECTION_ITEMS.map((d) => ({
+            id: d.id,
+            partNumber: d.partNumber,
+            description: d.description,
+            position: d.position,
+            status: null,
+          }));
+        }
+
+        setItems(mapped);
       } catch (e) {
         console.error(e);
         setError('Failed to load inspection items');
