@@ -107,8 +107,8 @@ interface WorkOrder {
   firstName: string;
   lastName: string;
   carYear: string;
-  vehMake: string;
-  vehModel: string;
+  make: string;
+  model: string;
   engineType: string;
   license: string;
   date: string;
@@ -128,6 +128,7 @@ const EnhancedWorkOrderCard: React.FC<EnhancedWorkOrderCardProps> = ({
 }) => {
   const animatedValue = new Animated.Value(0);
   const scaleValue = new Animated.Value(1);
+  const { theme } = useTheme();
   
   React.useEffect(() => {
     Animated.timing(animatedValue, {
@@ -206,7 +207,7 @@ const EnhancedWorkOrderCard: React.FC<EnhancedWorkOrderCardProps> = ({
       ]}
     >
       <Pressable
-        style={styles.workOrderCard}
+        style={[styles.workOrderCard, { backgroundColor: theme.background }]}
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -219,13 +220,19 @@ const EnhancedWorkOrderCard: React.FC<EnhancedWorkOrderCardProps> = ({
         <View style={styles.cardContent}>
           <View style={styles.orderHeader}>
             <View style={styles.orderInfo}>
-              <Text style={[styles.customerName, TYPOGRAPHY.titleLarge]}>
+              <Text
+                style={[styles.customerName, TYPOGRAPHY.titleLarge, { color: theme.text }]}
+              >
                 {order.firstName} {order.lastName}
               </Text>
-              <Text style={[styles.vehicleInfo, TYPOGRAPHY.bodyMedium]}>
-                {order.carYear} {order.vehMake} {order.vehModel}
+              <Text
+                style={[styles.vehicleInfo, TYPOGRAPHY.bodyMedium, { color: theme.text }]}
+              >
+                {order.carYear} {order.make} {order.model}
               </Text>
-              <Text style={[styles.estimateNumber, TYPOGRAPHY.labelMedium]}>
+              <Text
+                style={[styles.estimateNumber, TYPOGRAPHY.labelMedium, { color: theme.text }]}
+              >
                 EST #{order.estimateNo}
               </Text>
             </View>
@@ -242,16 +249,16 @@ const EnhancedWorkOrderCard: React.FC<EnhancedWorkOrderCardProps> = ({
 
           <View style={styles.orderDetails}>
             <View style={styles.detailRow}>
-              <Text style={[styles.detailLabel, TYPOGRAPHY.labelSmall]}>ENGINE</Text>
-              <Text style={[styles.detailValue, TYPOGRAPHY.bodyMedium]}>{order.engineType}</Text>
+              <Text style={[styles.detailLabel, TYPOGRAPHY.labelSmall, { color: theme.text }]}>ENGINE</Text>
+              <Text style={[styles.detailValue, TYPOGRAPHY.bodyMedium, { color: theme.text }]}>{order.engineType}</Text>
             </View>
             <View style={styles.detailRow}>
-              <Text style={[styles.detailLabel, TYPOGRAPHY.labelSmall]}>LICENSE</Text>
-              <Text style={[styles.detailValue, TYPOGRAPHY.bodyMedium]}>{order.license}</Text>
+              <Text style={[styles.detailLabel, TYPOGRAPHY.labelSmall, { color: theme.text }]}>LICENSE</Text>
+              <Text style={[styles.detailValue, TYPOGRAPHY.bodyMedium, { color: theme.text }]}>{order.license}</Text>
             </View>
             <View style={styles.detailRow}>
-              <Text style={[styles.detailLabel, TYPOGRAPHY.labelSmall]}>DATE</Text>
-              <Text style={[styles.detailValue, TYPOGRAPHY.bodyMedium]}>
+              <Text style={[styles.detailLabel, TYPOGRAPHY.labelSmall, { color: theme.text }]}>DATE</Text>
+              <Text style={[styles.detailValue, TYPOGRAPHY.bodyMedium, { color: theme.text }]}>
                 {new Date(order.date).toLocaleDateString()}
               </Text>
             </View>
@@ -385,7 +392,7 @@ export default function WorkOrdersScreen() {
         <View style={styles.headerDivider} />
       </View>
 
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
         {/* Enhanced Error Message */}
         {error && (
           <View style={styles.errorContainer}>
@@ -597,14 +604,14 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     backgroundColor: COLORS.magenta,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 12,
     shadowColor: COLORS.magenta,
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowRadius: 8,
+    elevation: 4,
   },
   logoutButtonText: {
     color: COLORS.white,
@@ -622,7 +629,6 @@ const styles = StyleSheet.create({
   // Main Container
   container: {
     flex: 1,
-    backgroundColor: COLORS.biscuit,
   },
 
   // Refined Error States
@@ -792,7 +798,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
   },
   workOrderCard: {
-    backgroundColor: COLORS.white,
     borderRadius: 20,
     shadowColor: COLORS.shadow,
     shadowOffset: { width: 0, height: 8 },

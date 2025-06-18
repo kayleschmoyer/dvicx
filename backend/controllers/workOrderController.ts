@@ -9,7 +9,7 @@ export async function getWorkOrders(req: Request, res: Response): Promise<void> 
   }
 
   try {
-    const orders = await workOrderService.findByTechId(mechanicId);
+    const orders = await workOrderService.findByMechanicId(mechanicId);
     res.json(orders);
   } catch (error) {
     console.error(error);
