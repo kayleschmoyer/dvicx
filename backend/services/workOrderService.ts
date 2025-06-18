@@ -8,7 +8,8 @@ export async function findByTechId(techId: number): Promise<WorkOrder[]> {
     .input('TechID', sql.Int, techId)
     .query(
       `SELECT ESTIMATE_NO, TECH_ID, FIRST_NAME, LAST_NAME, CAR_YEAR, VEH_MAKE, VEH_MODEL, ENGINE_TYPE, LIC_NUMBER, DATE, STATUS
-       FROM ESTMTEHDR WHERE TECH_ID = @TechID`
+       FROM ESTMTEHDR
+       WHERE TECH_ID = @TechID AND STATUS NOT IN (4, 5)`
     );
 
   return result.recordset.map((row: any) => ({

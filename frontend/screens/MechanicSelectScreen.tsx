@@ -104,10 +104,10 @@ interface EnhancedMechanicCardProps {
   index: number;
 }
 
-const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({ 
-  mechanic, 
-  onPress, 
-  index 
+const EnhancedMechanicCard: React.FC<EnhancedMechanicCardProps> = ({
+  mechanic,
+  onPress,
+  index,
 }) => {
   const animatedValue = new Animated.Value(0);
   const scaleValue = new Animated.Value(1);
@@ -221,21 +221,22 @@ export default function MechanicSelectScreen() {
   const [modal, setModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const loadMechanics = async () => {
+    try {
+      console.log('📡 Fetching mechanics for company ID:', COMPANY_ID);
+      const list = await getMechanics(COMPANY_ID);
+      console.log('✅ Mechanics loaded:', list);
+      setMechanics(list);
+    } catch (e) {
+      console.error('❌ Failed to load mechanics:', e);
+      setError('Failed to load mechanics');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const load = async () => {
-      try {
-        console.log('📡 Fetching mechanics for company ID:', COMPANY_ID);
-        const list = await getMechanics(COMPANY_ID);
-        console.log('✅ Mechanics loaded:', list);
-        setMechanics(list);
-      } catch (e) {
-        console.error('❌ Failed to load mechanics:', e);
-        setError('Failed to load mechanics');
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
+    loadMechanics();
   }, []);
 
   const handleSelect = (id: string) => {
@@ -421,6 +422,7 @@ export default function MechanicSelectScreen() {
           onClose={() => {
             setModal(false);
             setSelected(null);
+            loadMechanics();
           }}
           onSubmit={handleLogin}
         />
