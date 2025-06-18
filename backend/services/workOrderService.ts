@@ -1,28 +1,28 @@
 import { sql, poolPromise } from '../database/sql';
-import { WorkOrder } from '../models/workOrderModel';
+import { Estimate } from '../models/estimateModel';
 
-export async function findByTechId(techId: number): Promise<WorkOrder[]> {
+export async function findByMechanicId(mechanicId: number): Promise<Estimate[]> {
   const pool = await poolPromise;
   const result = await pool
     .request()
-    .input('TechID', sql.Int, techId)
-    .query(
-      `SELECT ESTIMATE_NO, TECH_ID, FIRST_NAME, LAST_NAME, CAR_YEAR, VEH_MAKE, VEH_MODEL, ENGINE_TYPE, LIC_NUMBER, DATE, STATUS
-       FROM ESTMTEHDR
-       WHERE TECH_ID = @TechID AND STATUS NOT IN (4, 5)`
-    );
+    .input('mechanicId', sql.Int, mechanicId)
+    .query(`
+      SELECT ESTIMATE_NUMBER, ESTIMATOR_NUMBER, FIRST_NAME, LAST_NAME, CAR_YEAR, MAKE, MODEL, ENGINE_TYPE, LIC_NUMBER, DATESTAMP, STATUS
+      FROM ESTMTEHDR
+      WHERE ESTIMATOR_NUMBER = @mechanicId AND STATUS NOT IN (4, 5)
+    `);
 
   return result.recordset.map((row: any) => ({
-    estimateNo: row.ESTIMATE_NO,
-    techId: row.TECH_ID,
+    estimateNo: row.ESTIMATE_NUMBER,
+    techId: row.ESTIMATOR_NUMBER,
     firstName: row.FIRST_NAME,
     lastName: row.LAST_NAME,
     carYear: row.CAR_YEAR,
-    vehMake: row.VEH_MAKE,
-    vehModel: row.VEH_MODEL,
     engineType: row.ENGINE_TYPE,
     license: row.LIC_NUMBER,
-    date: row.DATE,
+    date: row.DATESTAMP,
     status: row.STATUS,
+    make: row.MAKE,
+    model: row.MODEL,
   }));
 }
