@@ -9,6 +9,7 @@ export interface InspectionItem {
   id: number;
   partNumber: string;
   description: string;
+  position?: string | null;
   status?: Status | null;
   reason?: string;
   photo?: string;
@@ -39,13 +40,23 @@ export default function InspectionItemCard({ item, onChange }: Props) {
     <Animated.View style={[styles.card, { transform: [{ translateX: slideAnim }], backgroundColor: theme.background }]}>
       <Text style={[styles.title, { color: theme.text }]}>{item.partNumber}</Text>
       <Text style={[styles.desc, { color: theme.text }]}>{item.description}</Text>
+      {item.position && (
+        <Text style={[styles.position, { color: theme.text }]}>{item.position}</Text>
+      )}
       <StatusSelector value={item.status || null} onChange={(s) => update({ status: s })} />
-      <TextInput
-        placeholder="Reason (optional)"
-        value={item.reason}
-        onChangeText={(t) => update({ reason: t })}
-      />
-      <PhotoUploader value={item.photo} onChange={(uri) => update({ photo: uri })} />
+      {(item.status === 'yellow' || item.status === 'red') && (
+        <>
+          <TextInput
+            placeholder="Reason"
+            value={item.reason}
+            onChangeText={(t) => update({ reason: t })}
+          />
+          <PhotoUploader
+            value={item.photo}
+            onChange={(uri) => update({ photo: uri })}
+          />
+        </>
+      )}
     </Animated.View>
   );
 }
@@ -63,5 +74,9 @@ const styles = StyleSheet.create({
   },
   desc: {
     marginBottom: 8,
+  },
+  position: {
+    marginBottom: 8,
+    fontStyle: 'italic',
   },
 });

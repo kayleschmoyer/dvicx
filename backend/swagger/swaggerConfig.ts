@@ -61,6 +61,7 @@ const options: swaggerJSDoc.Options = {
             id: { type: 'number' },
             partNumber: { type: 'string' },
             description: { type: 'string' },
+            position: { type: 'string', nullable: true },
             status: { type: 'string', nullable: true },
             reason: { type: 'string', nullable: true },
             photo: { type: 'string', nullable: true },
