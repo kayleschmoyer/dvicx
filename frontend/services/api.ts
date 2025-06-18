@@ -36,7 +36,7 @@ export async function getLineItems(orderId: number) {
 }
 
 export async function submitInspection(data: any) {
-  const response = await api.post('/inspections', data);
+  const response = await api.post('/inspections/submit', data);
   return response.data;
 }
 

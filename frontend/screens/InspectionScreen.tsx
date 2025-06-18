@@ -31,6 +31,7 @@ export default function InspectionScreen() {
           id: it.id || idx,
           partNumber: it.PART_NUMBER || it.partNumber,
           description: it.DESCRIPTION || it.description,
+          position: it.POSITION || it.position || null,
           status: null,
         })));
       } catch (e) {

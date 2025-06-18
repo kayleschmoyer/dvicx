@@ -14,13 +14,14 @@ export async function findLineItems(orderId: number): Promise<LineItem[]> {
     .request()
     .input('OrderID', sql.Int, orderId)
     .query(
-      "SELECT LINE_ITEM_ID, PART_NUMBER, DESCRIPTION FROM LINEITEM WHERE WORK_ORDER_ID = @OrderID AND DECLINED = '0'"
+      "SELECT LINE_ITEM_ID, PART_NUMBER, DESCRIPTION, POSITION FROM LINEITEM WHERE WORK_ORDER_ID = @OrderID AND DECLINED = '0'"
     );
 
   return result.recordset.map((row: any) => ({
     id: row.LINE_ITEM_ID,
     partNumber: row.PART_NUMBER,
     description: row.DESCRIPTION,
+    position: row.POSITION || null,
   }));
 }
 
