@@ -1,4 +1,5 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode, useEffect } from 'react';
+import api from '../services/api';
 
 interface AuthContextProps {
   mechanicId: string | null;
@@ -17,6 +18,14 @@ export const AuthContext = createContext<AuthContextProps>({
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [mechanicId, setMechanicId] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete api.defaults.headers.common['Authorization'];
+    }
+  }, [token]);
 
   const login = (id: string, authToken: string) => {
     setMechanicId(id);
