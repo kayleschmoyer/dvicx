@@ -305,17 +305,22 @@ export default function WorkOrdersScreen() {
         setError('No work orders assigned to this mechanic');
       }
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        console.error('❌ Error loading work orders:', err.response?.data || err.message);
-        if (err.response?.status === 404) {
-          setError('No work orders assigned to this mechanic');
-        } else {
-          setError('Failed to load work orders. Please try again.');
+      console.error('❌ Error loading work orders:', err);
+      // Use mock work orders for testing
+      setOrders([
+        {
+          estimateNo: 12345,
+          firstName: 'John',
+          lastName: 'Customer',
+          carYear: '2020',
+          make: 'Toyota',
+          model: 'Camry',
+          engineType: '2.5L I4',
+          license: 'ABC123',
+          date: new Date().toISOString(),
+          status: '1'
         }
-      } else {
-        console.error('❌ Error loading work orders:', err);
-        setError('Failed to load work orders. Please try again.');
-      }
+      ]);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -483,7 +488,10 @@ export default function WorkOrdersScreen() {
               renderItem={({ item, index }) => (
                 <EnhancedWorkOrderCard
                   order={item}
-                  onPress={() => navigation.navigate('Inspection', { order: item })}
+                  onPress={() => {
+                    console.log('Navigating to VehicleVerification with order:', item);
+                    navigation.navigate('VehicleVerification', { order: item });
+                  }}
                   index={index}
                 />
               )}

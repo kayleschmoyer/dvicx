@@ -4,6 +4,9 @@ import { useTheme } from '../hooks';
 import StatusSelector, { Status } from './StatusSelector';
 import TextInput from './TextInput';
 import PhotoUploader from './PhotoUploader';
+import QuickActions from './QuickActions';
+import VoiceRecorder from './VoiceRecorder';
+import MeasurementHelper from './MeasurementHelper';
 
 export interface InspectionItem {
   id: number;
@@ -13,6 +16,10 @@ export interface InspectionItem {
   status?: Status | null;
   reason?: string;
   photo?: string;
+  measurement?: string;
+  specification?: string;
+  requiresMeasurement?: boolean;
+  voiceNote?: string;
 }
 
 interface Props {
@@ -44,16 +51,48 @@ export default function InspectionItemCard({ item, onChange }: Props) {
         <Text style={[styles.position, { color: theme.text }]}>{item.position}</Text>
       )}
       <StatusSelector value={item.status || null} onChange={(s) => update({ status: s })} />
+      <QuickActions 
+        partNumber={item.partNumber}
+        description={item.description}
+        onQuickAction={(action, reason) => update({ 
+          status: action as Status, 
+          reason: (action === 'yellow' || action === 'red') ? reason : undefined 
+        })} 
+      />
+      {item.requiresMeasurement && (
+        <View style={styles.measurementRow}>
+          <TextInput
+            placeholder={`Measurement (${item.specification || 'mm'})`}
+            value={item.measurement}
+            onChangeText={(t) => update({ measurement: t })}
+            keyboardType="numeric"
+            style={styles.measurementInput}
+          />
+          {item.specification && (
+            <Text style={[styles.spec, { color: theme.text }]}>Spec: {item.specification}</Text>
+          )}
+          {item.specification && (
+            <MeasurementHelper 
+              specification={item.specification}
+              onMeasurement={(value) => update({ measurement: value })}
+            />
+          )}
+        </View>
+      )}
       {(item.status === 'yellow' || item.status === 'red') && (
         <>
           <TextInput
-            placeholder="Reason"
+            placeholder="Reason/Notes"
             value={item.reason}
             onChangeText={(t) => update({ reason: t })}
+            multiline
           />
           <PhotoUploader
             value={item.photo}
             onChange={(uri) => update({ photo: uri })}
+          />
+          <VoiceRecorder
+            onRecording={(text) => update({ reason: (item.reason || '') + ' ' + text })}
           />
         </>
       )}
@@ -78,5 +117,16 @@ const styles = StyleSheet.create({
   position: {
     marginBottom: 8,
     fontStyle: 'italic',
+  },
+  measurementRow: {
+    marginBottom: 8,
+  },
+  measurementInput: {
+    marginBottom: 4,
+  },
+  spec: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    opacity: 0.7,
   },
 });
