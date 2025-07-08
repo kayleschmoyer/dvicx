@@ -135,7 +135,7 @@ export default function VehicleVerificationScreen() {
 
       <View style={styles.buttonRow}>
         <Button
-          title="Skip & Start Inspection"
+          title="Start Inspection"
           onPress={handleContinue}
           style={styles.continueButton}
         />
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     marginTop: 16,
-    marginBottom: 32,
+    marginBottom: 60,
   },
   continueButton: {
     backgroundColor: '#4CAF50',

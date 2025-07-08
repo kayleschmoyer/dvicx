@@ -1,19 +1,9 @@
 import React from 'react';
-import { View, Switch, StyleSheet } from 'react-native';
-import { useTheme } from '../hooks';
+import { View, StyleSheet } from 'react-native';
 
 export default function ThemeToggle() {
-  const { mode, toggleTheme, theme } = useTheme();
-  return (
-    <View style={styles.container}>
-      <Switch
-        value={mode === 'dark'}
-        onValueChange={toggleTheme}
-        thumbColor={theme.accent}
-        trackColor={{ true: theme.accent, false: '#ccc' }}
-      />
-    </View>
-  );
+  // Theme toggle removed - app uses light theme only
+  return <View style={styles.container} />;
 }
 
 const styles = StyleSheet.create({

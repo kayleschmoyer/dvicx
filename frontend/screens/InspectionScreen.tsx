@@ -214,17 +214,19 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   tabContainer: {
-    maxHeight: 60,
+    paddingVertical: 8,
     marginBottom: 16,
   },
   tab: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
     marginHorizontal: 4,
     borderRadius: 20,
     backgroundColor: '#f0f0f0',
     alignItems: 'center',
-    minWidth: 80,
+    minWidth: 100,
+    height: 44,
+    justifyContent: 'center',
   },
   activeTab: {
     backgroundColor: '#007AFF',
@@ -233,7 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
   },
   tabText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
     color: '#666',
   },

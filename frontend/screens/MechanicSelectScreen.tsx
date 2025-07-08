@@ -438,6 +438,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: COLORS.charcoal,
+    paddingTop: 40,
   },
 
   // Enhanced Loading States
