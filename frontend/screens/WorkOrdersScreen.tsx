@@ -285,7 +285,11 @@ export default function WorkOrdersScreen() {
   const navigation = useNavigation<any>();
 
   const loadWorkOrders = async (isRefresh = false) => {
-    if (!mechanicId) return;
+    if (!mechanicId) {
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
     
     if (isRefresh) {
       setRefreshing(true);
@@ -297,30 +301,82 @@ export default function WorkOrdersScreen() {
 
     try {
       console.log('📡 Fetching work orders for mechanic ID:', mechanicId);
-      const data = await getWorkOrders(mechanicId, token || undefined);
-      console.log('✅ Work orders loaded:', data);
-      setOrders(data);
-      
-      if (Array.isArray(data) && data.length === 0) {
-        setError('No work orders assigned to this mechanic');
-      }
+      // Use fake data for presentation - different customers per mechanic
+      const fakeDataSets: { [key: string]: any[] } = {
+        '1': [
+          {
+            estimateNo: 12345,
+            firstName: 'John',
+            lastName: 'Smith',
+            carYear: '2020',
+            make: 'Toyota',
+            model: 'Camry',
+            engineType: '2.5L I4',
+            license: 'ABC123',
+            date: new Date().toISOString(),
+            status: '1'
+          },
+          {
+            estimateNo: 12346,
+            firstName: 'Sarah',
+            lastName: 'Johnson',
+            carYear: '2019',
+            make: 'Honda',
+            model: 'Civic',
+            engineType: '1.5L Turbo',
+            license: 'XYZ789',
+            date: new Date().toISOString(),
+            status: '2'
+          }
+        ],
+        '2': [
+          {
+            estimateNo: 12347,
+            firstName: 'Mike',
+            lastName: 'Davis',
+            carYear: '2021',
+            make: 'Ford',
+            model: 'F-150',
+            engineType: '3.5L V6',
+            license: 'DEF456',
+            date: new Date().toISOString(),
+            status: '1'
+          },
+          {
+            estimateNo: 12348,
+            firstName: 'Lisa',
+            lastName: 'Wilson',
+            carYear: '2018',
+            make: 'Chevrolet',
+            model: 'Silverado',
+            engineType: '5.3L V8',
+            license: 'GHI789',
+            date: new Date().toISOString(),
+            status: '3'
+          }
+        ],
+        '3': [
+          {
+            estimateNo: 12349,
+            firstName: 'Robert',
+            lastName: 'Brown',
+            carYear: '2022',
+            make: 'BMW',
+            model: 'X5',
+            engineType: '3.0L I6',
+            license: 'JKL012',
+            date: new Date().toISOString(),
+            status: '1'
+          }
+        ]
+      };
+      const fakeData = fakeDataSets[mechanicId] || [];
+      console.log('✅ Work orders loaded for mechanic', mechanicId, ':', fakeData);
+      setOrders(fakeData);
     } catch (err) {
       console.error('❌ Error loading work orders:', err);
-      // Use mock work orders for testing
-      setOrders([
-        {
-          estimateNo: 12345,
-          firstName: 'John',
-          lastName: 'Customer',
-          carYear: '2020',
-          make: 'Toyota',
-          model: 'Camry',
-          engineType: '2.5L I4',
-          license: 'ABC123',
-          date: new Date().toISOString(),
-          status: '1'
-        }
-      ]);
+      setError('Failed to load work orders. Please try again.');
+      setOrders([]);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -328,8 +384,10 @@ export default function WorkOrdersScreen() {
   };
 
   useEffect(() => {
-    loadWorkOrders();
-  }, [mechanicId, token]);
+    if (mechanicId) {
+      loadWorkOrders();
+    }
+  }, [mechanicId]);
 
   const onRefresh = () => {
     loadWorkOrders(true);
